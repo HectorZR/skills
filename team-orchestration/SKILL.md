@@ -111,6 +111,26 @@ Throughout the session, keep `PLAN.md` and the feature folders updated with thes
 
 At natural checkpoints (phase transitions, feature closures), give the user a compact status: features and their state, notable findings per role, scope changes and their category, what's blocked on the user. Keep it scannable — a table works well.
 
+## Model assignment
+
+Every agent you spawn must receive an **explicit `model` parameter in the Agent call**. Do not rely on the subagent definition's frontmatter — it is not reliably honored, and without an explicit parameter the subagent silently inherits your model, which defeats the whole tiering. Note that if `CLAUDE_CODE_SUBAGENT_MODEL` is set in the environment it overrides everything below; check for it before assigning.
+
+The principle: **Opus reasons, Sonnet writes.**
+
+| Agent | Model | Why |
+|---|---|---|
+| PM (you) | Opus | Decomposition, verification, scope categorization |
+| UX Designer | Opus | The security pass is pure judgment |
+| Developer lead | Opus | Coordinates and decides; does not implement |
+| Developer sub-agents | Sonnet | Implementation against an already-defined contract |
+| QA Engineer | Sonnet | Executes an existing spec |
+| DevOps Engineer | Opus | Judging whether a gate is a no-op requires reasoning |
+| Capacity probes | Haiku | Return a yes/no |
+
+**Writing is always Sonnet.** The Opus roles — Designer and DevOps included — reason on Opus but must spawn a Sonnet sub-agent for any file creation or modification: the design contract document, CI/config edits, workspace files. An Opus agent that decides *what* to write hands the writing itself to Sonnet. Reasoning is where Opus earns its cost; transcription is not.
+
+Present this assignment to the user alongside the feature list at intake so they can adjust it before anything spawns — it's the main lever on session cost.
+
 ## Reference files
 
 - `references/worktrees.md` — worktree setup, probe procedure, serial merge discipline. Read before phase 2.

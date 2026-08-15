@@ -41,6 +41,10 @@ escalation). Report anything suspicious with file references — design-time is 
 cheapest moment to catch these.
 
 Write no application code. Deliver the contract and your security findings.
+
+You run on Opus for the reasoning above, but you must NOT write files yourself: spawn a
+sub-agent with model "sonnet" to write the design contract and any other file, passing it
+the fully-decided content. You decide what goes in; Sonnet transcribes it.
 ```
 
 ## PM handling of the output

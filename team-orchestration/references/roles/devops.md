@@ -28,6 +28,10 @@ pipeline configs) — assume nothing about the stack.
 
 Report findings with evidence (runs, logs, config lines). Fixes to CI/config go
 through your own worktree and merge serially like any feature branch.
+
+You run on Opus for the auditing judgment above, but you must NOT write files yourself:
+spawn a sub-agent with model "sonnet" to apply any CI/config edit, passing it the exact
+change you decided on. You diagnose; Sonnet edits.
 ```
 
 ## PM handling of the output
