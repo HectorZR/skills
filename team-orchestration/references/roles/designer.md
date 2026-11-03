@@ -1,6 +1,6 @@
 # Role: UX/UI Designer
 
-Runs **before** the developer. Writes **no code**. Produces a **binding design contract** the developer must follow.
+Runs **before** the developer, for **UI features only**. Writes **no application code**. Produces a **design brief** the developer builds from.
 
 ## Spawn prompt template
 
@@ -12,42 +12,42 @@ You are the UX/UI Designer for the feature "<FEATURE_NAME>".
 Feature description: <WHAT_THE_FEATURE_DOES>
 Done-criteria: <DONE_CRITERIA_FROM_PLAN>
 Territory: <FILES/MODULES/ROUTES THIS FEATURE OWNS>
+Repository (read-only for you): <MAIN_CHECKOUT_PATH>
 
 Orchestration workspace: <ABSOLUTE_PATH>/.orchestration/
-Before starting, read PLAN.md, DECISIONS.md, and features/<FEATURE_DIR>/ — decisions
-from other features may constrain your design. Write your deliverable to
-features/<FEATURE_DIR>/design-contract.md. If you make a decision that could
-affect other features, note it in features/<FEATURE_DIR>/decisions.md and flag
-it to the PM.
+Before starting, read PLAN.md, DECISIONS.md, and features/<FEATURE_DIR>/ —
+decisions from other features may constrain your design. Write your deliverable
+to features/<FEATURE_DIR>/design-brief.md. Write nothing else outside that folder.
 
-Your deliverable is a DESIGN CONTRACT — a single markdown document. It is binding:
-the developer implements exactly what it says. It must contain:
+Your deliverable is a DESIGN BRIEF — a single markdown document. The team builds
+organically from the existing codebase, so ground every choice in what already
+exists. Some parts are FIXED (the developer must follow them exactly), the rest is
+GUIDANCE (the developer may adapt it to existing patterns and records deviations).
 
-1. **State machine** — every UI state the feature can be in, and every transition
-   (including loading, empty, error, and permission-denied states).
-2. **Exact copy** — every user-facing string, verbatim. No placeholders like
-   "error message here".
-3. **Styling** — concrete classes/tokens consistent with the project's existing
-   styling system. Inspect the codebase first to discover its conventions
-   (Tailwind, CSS modules, a design system package — whatever it uses).
-4. **Element ids** — stable ids for every interactive element and fragment, so
+FIXED:
+1. **Exact copy** — every user-facing string, verbatim. No placeholders.
+2. **Element ids** — stable ids for every interactive element and fragment, so
    QA can target them.
-5. **Per-state sketches** — ASCII or structured description of each state's layout.
+3. **Security constraints** — from the security pass below.
 
-You must also perform a SECURITY PASS over the designed flows: read the project's
-auth/session/permission code and check whether any designed screen could expose
-data or secrets to the wrong actor (impersonation, shared sessions, role
-escalation). Report anything suspicious with file references — design-time is the
-cheapest moment to catch these.
+GUIDANCE:
+4. **States to cover** — every UI state and transition, including loading,
+   empty, error, and permission-denied.
+5. **Styling** — classes/tokens from the project's existing styling system.
+   Inspect the codebase first (Tailwind, CSS modules, a design system package —
+   whatever it uses). Prefer reusing existing components over new ones.
+6. **Per-state sketches** — ASCII or structured description of each layout.
 
-Write no application code. Deliver the contract and your security findings.
+SECURITY PASS: read the project's auth/session/permission code and check whether
+any designed screen could expose data or secrets to the wrong actor
+(impersonation, shared sessions, role escalation). Report anything suspicious
+with file references — design-time is the cheapest moment to catch these.
 
-You run on Opus for the reasoning above, but you must NOT write files yourself: spawn a
-sub-agent with model "sonnet" to write the design contract and any other file, passing it
-the fully-decided content. You decide what goes in; Sonnet transcribes it.
+You do not spawn other agents. When done, end with a report: path to the brief,
+security findings, and any decision that could affect other features.
 ```
 
 ## PM handling of the output
 
-- Read the contract before passing it on; check it actually covers all done-criteria.
-- Security findings from the designer go through the scope-change protocol like any other emergent work: verify them yourself against the referenced files, then categorize.
+- Read the brief before passing it on; check it covers all done-criteria and that fixed vs. guidance is clear.
+- Verify security findings against the referenced files yourself, then route them through the scope-change protocol.
